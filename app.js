@@ -108,6 +108,23 @@ const DEFAULT_CRITERIA = [
   },
 ];
 
+// ── Barème ────────────────────────────────────────────────────────────────
+const BAREME_OPTIONS = [
+  { label: 'Très bon',  color: 'green'  },
+  { label: 'Bon',       color: 'yellow' },
+  { label: 'Moyen',     color: 'orange' },
+  { label: 'Mauvais',   color: 'red'    },
+];
+
+function makeBaremeCriterion() {
+  return {
+    id: uid(),
+    name: 'barème',
+    type: 'bareme',
+    options: BAREME_OPTIONS.map(o => ({ id: uid(), label: o.label, color: o.color, checked: false })),
+  };
+}
+
 // ── State ─────────────────────────────────────────────────────────────────
 let state = {
   workshopName: 'Workshop Photo',
@@ -149,6 +166,8 @@ function render() {
 }
 
 function buildCriterionCard(criterion) {
+  if (criterion.type === 'bareme') return buildBaremeCard(criterion);
+
   const hasChecked = criterion.options.some(o => o.checked);
 
   const card = document.createElement('div');
@@ -207,6 +226,64 @@ function buildCriterionCard(criterion) {
 
   card.appendChild(header);
   card.appendChild(optionsList);
+
+  return card;
+}
+
+function buildBaremeCard(criterion) {
+  const selected = criterion.options.find(o => o.checked);
+
+  const card = document.createElement('div');
+  card.className = 'criterion-card' + (selected ? ' has-checked' : '');
+  card.dataset.id = criterion.id;
+
+  // Header
+  const header = document.createElement('div');
+  header.className = 'criterion-header';
+
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.className = 'criterion-name';
+  nameInput.value = criterion.name;
+  nameInput.placeholder = 'Nom du barème…';
+  nameInput.addEventListener('input', e => {
+    criterion.name = e.target.value;
+    persistState();
+  });
+
+  const btnDelete = document.createElement('button');
+  btnDelete.className = 'btn-icon btn-delete-criterion';
+  btnDelete.textContent = '✕';
+  btnDelete.title = 'Supprimer ce barème';
+  btnDelete.addEventListener('click', () => {
+    state.criteria = state.criteria.filter(c => c.id !== criterion.id);
+    persistState();
+    render();
+  });
+
+  header.appendChild(nameInput);
+  header.appendChild(btnDelete);
+
+  // Colored pills
+  const pillsRow = document.createElement('div');
+  pillsRow.className = 'bareme-options';
+
+  criterion.options.forEach(option => {
+    const btn = document.createElement('button');
+    btn.className = `bareme-btn bareme-${option.color}${option.checked ? ' selected' : ''}`;
+    btn.textContent = option.label;
+    btn.addEventListener('click', () => {
+      const wasChecked = option.checked;
+      criterion.options.forEach(o => o.checked = false);
+      option.checked = !wasChecked;
+      persistState();
+      render();
+    });
+    pillsRow.appendChild(btn);
+  });
+
+  card.appendChild(header);
+  card.appendChild(pillsRow);
 
   return card;
 }
@@ -499,6 +576,12 @@ function init() {
     render();
     const inputs = document.querySelectorAll('.criterion-name');
     if (inputs.length) inputs[inputs.length - 1].focus();
+  });
+
+  document.getElementById('btnAddBareme').addEventListener('click', () => {
+    state.criteria.push(makeBaremeCriterion());
+    persistState();
+    render();
   });
 
   document.getElementById('btnGenerate').addEventListener('click', generateEvaluation);
