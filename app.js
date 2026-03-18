@@ -435,8 +435,7 @@ function generateEvaluation() {
     if (!opts.length) return;
     lines.push(`${c.name} :`);
     opts.forEach(o => {
-      const grade = o.grade ? ` (${o.grade})` : '';
-      lines.push(`  - ${o.label}${grade}`);
+      lines.push(`  - ${o.label}`);
     });
     lines.push('');
   });
