@@ -280,40 +280,6 @@ main {
   padding: .2rem 0;
 }
 
-/* ── Grade pills (per option) ────────────────── */
-.option-grade-row {
-  display: flex;
-  gap: .3rem;
-  flex-shrink: 0;
-}
-
-.grade-pill {
-  border: 1.5px solid transparent;
-  border-radius: 12px;
-  padding: .1rem .55rem;
-  font-size: .72rem;
-  font-weight: 500;
-  background: var(--surface2);
-  color: var(--text2);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all .15s;
-}
-
-.grade-pill.grade-green  { border-color: #6aaa80; }
-.grade-pill.grade-yellow { border-color: #c8c85a; }
-.grade-pill.grade-orange { border-color: #d4874a; }
-.grade-pill.grade-red    { border-color: #c06060; }
-
-.grade-pill.grade-green:hover  { color: #6aaa80; }
-.grade-pill.grade-yellow:hover { color: #c8c85a; }
-.grade-pill.grade-orange:hover { color: #d4874a; }
-.grade-pill.grade-red:hover    { color: #c06060; }
-
-.grade-pill.grade-green.selected  { background: #6aaa80; color: #0f0f11; border-color: #6aaa80; }
-.grade-pill.grade-yellow.selected { background: #c8c85a; color: #0f0f11; border-color: #c8c85a; }
-.grade-pill.grade-orange.selected { background: #d4874a; color: #0f0f11; border-color: #d4874a; }
-.grade-pill.grade-red.selected    { background: #c06060; color: #fff;    border-color: #c06060; }
 
 .option-row input[type="checkbox"] {
   width: 16px;

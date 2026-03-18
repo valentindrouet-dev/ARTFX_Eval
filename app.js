@@ -109,12 +109,6 @@ const DEFAULT_CRITERIA = [
 ];
 
 // ── Grade levels ──────────────────────────────────────────────────────────
-const GRADE_OPTIONS = [
-  { label: 'Très bon', color: 'green'  },
-  { label: 'Bon',      color: 'yellow' },
-  { label: 'Moyen',    color: 'orange' },
-  { label: 'Mauvais',  color: 'red'    },
-];
 
 // ── State ─────────────────────────────────────────────────────────────────
 let state = {
@@ -246,24 +240,7 @@ function buildOptionRow(criterion, option) {
     persistState();
   });
 
-  // ── Grade pills (inline, at the end) ──
-  const gradeContainer = document.createElement('div');
-  gradeContainer.className = 'option-grade-row';
-
-  GRADE_OPTIONS.forEach(g => {
-    const pill = document.createElement('button');
-    pill.className = `grade-pill grade-${g.color}${option.grade === g.label ? ' selected' : ''}`;
-    pill.textContent = g.label;
-    pill.addEventListener('click', () => {
-      option.grade = option.grade === g.label ? null : g.label;
-      persistState();
-      gradeContainer.querySelectorAll('.grade-pill').forEach(p => p.classList.remove('selected'));
-      if (option.grade) pill.classList.add('selected');
-    });
-    gradeContainer.appendChild(pill);
-  });
-
-  const btnDel = document.createElement('button');
+const btnDel = document.createElement('button');
   btnDel.className = 'btn-delete-option';
   btnDel.textContent = '✕';
   btnDel.title = 'Supprimer';
@@ -275,7 +252,6 @@ function buildOptionRow(criterion, option) {
 
   row.appendChild(checkbox);
   row.appendChild(labelInput);
-  row.appendChild(gradeContainer);
   row.appendChild(btnDel);
 
   return row;
