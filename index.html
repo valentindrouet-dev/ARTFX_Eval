@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARTFX — Évaluateur</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <span class="logo">ARTFX</span>
+      <span class="separator">|</span>
+      <input type="text" id="workshopName" class="workshop-input" placeholder="Nom du workshop…" value="Workshop Photo">
+    </div>
+    <div class="header-right">
+      <button class="btn-icon" id="btnLoadTemplate" title="Charger un modèle">↑</button>
+      <button class="btn-icon" id="btnSaveTemplate" title="Sauvegarder comme modèle">↓</button>
+      <button class="btn-icon" id="btnSettings" title="Paramètres">⚙</button>
+    </div>
+  </header>
+
+  <!-- SETTINGS PANEL -->
+  <div id="settingsPanel" class="settings-panel hidden">
+    <div class="settings-content">
+      <h3>Paramètres</h3>
+      <label>Clé API Anthropic (Claude)</label>
+      <div class="api-key-row">
+        <input type="password" id="apiKeyInput" placeholder="sk-ant-…" autocomplete="off">
+        <button class="btn-secondary" id="btnSaveKey">Enregistrer</button>
+      </div>
+      <p class="hint">
+        Obtenez une clé sur <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>.<br>
+        Elle est stockée uniquement dans votre navigateur (localStorage).
+      </p>
+      <label>Modèle</label>
+      <select id="modelSelect">
+        <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 — rapide &amp; économique</option>
+        <option value="claude-sonnet-4-6" selected>Claude Sonnet 4.6 — meilleure qualité</option>
+      </select>
+      <button class="btn-icon close-settings" id="btnCloseSettings">✕ Fermer</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- STUDENT BAR -->
+    <div class="student-bar">
+      <label for="studentName">Étudiant·e</label>
+      <input type="text" id="studentName" placeholder="Prénom Nom…">
+      <button class="btn-ghost" id="btnClearAll" title="Décocher tout">Réinitialiser</button>
+    </div>
+
+    <!-- CRITERIA LIST -->
+    <div id="criteriaList" class="criteria-list"></div>
+
+    <!-- ADD CRITERION -->
+    <button class="btn-add-criterion" id="btnAddCriterion">+ Ajouter un critère</button>
+
+    <!-- GENERATE -->
+    <div class="generate-section">
+      <button class="btn-generate" id="btnGenerate">
+        <span class="btn-generate-icon">✦</span>
+        Générer l'évaluation
+      </button>
+    </div>
+
+    <!-- OUTPUT -->
+    <div id="outputSection" class="output-section hidden">
+      <div class="output-header">
+        <h3>Évaluation générée</h3>
+        <button class="btn-secondary" id="btnCopy">Copier</button>
+      </div>
+      <div id="outputText" class="output-text"></div>
+      <div id="outputMeta" class="output-meta"></div>
+    </div>
+
+  </main>
+
+  <!-- TEMPLATE MODAL -->
+  <div id="templateModal" class="modal hidden">
+    <div class="modal-content">
+      <h3 id="templateModalTitle">Modèles sauvegardés</h3>
+      <div id="templateList" class="template-list"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="btnCloseModal">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
