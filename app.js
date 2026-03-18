@@ -3,48 +3,107 @@
 // ── Default criteria ──────────────────────────────────────────────────────
 const DEFAULT_CRITERIA = [
   {
-    id: uid(), name: 'Cadrage',
+    id: uid(), name: 'cadrage',
     options: [
-      { id: uid(), label: 'Cadrage maîtrisé et expressif', checked: false },
-      { id: uid(), label: 'Cadrage solide, quelques ajustements possibles', checked: false },
-      { id: uid(), label: 'Cadrage inégal, mérite plus de recherche', checked: false },
-      { id: uid(), label: 'Cadrage non maîtrisé', checked: false },
+      { id: uid(), label: 'cadres intéressants / originaux', checked: false },
+      { id: uid(), label: 'bonnes idées de lumière', checked: false },
+      { id: uid(), label: 'cadres pas toujours heureux', checked: false },
     ]
   },
   {
-    id: uid(), name: 'Mise au point',
+    id: uid(), name: 'exposition',
     options: [
-      { id: uid(), label: 'MAP précise et intentionnelle', checked: false },
-      { id: uid(), label: 'MAP correcte mais quelques imprécisions', checked: false },
-      { id: uid(), label: 'Flous non contrôlés fréquents', checked: false },
-      { id: uid(), label: 'Difficultés techniques de mise au point', checked: false },
+      { id: uid(), label: 'quelques plans surexposés', checked: false },
+      { id: uid(), label: 'quelques plans sous-exposés', checked: false },
+      { id: uid(), label: 'exposition globalement maîtrisée', checked: false },
     ]
   },
   {
-    id: uid(), name: 'Exposition',
+    id: uid(), name: 'mise au point',
     options: [
-      { id: uid(), label: 'Exposition maîtrisée et créative', checked: false },
-      { id: uid(), label: 'Exposition bien gérée', checked: false },
-      { id: uid(), label: 'Quelques problèmes d\'exposition', checked: false },
-      { id: uid(), label: 'Exposition souvent incorrecte', checked: false },
+      { id: uid(), label: 'mise au point de plans difficiles réussie', checked: false },
+      { id: uid(), label: 'beaucoup de plans flous', checked: false },
     ]
   },
   {
-    id: uid(), name: 'Ambiance & lumière',
+    id: uid(), name: 'rythme',
     options: [
-      { id: uid(), label: 'Lumière travaillée avec sensibilité', checked: false },
-      { id: uid(), label: 'Bonne gestion de la lumière disponible', checked: false },
-      { id: uid(), label: 'Lumière peu exploitée', checked: false },
-      { id: uid(), label: 'Contraintes lumineuses non gérées', checked: false },
+      { id: uid(), label: 'montage bien rythmé', checked: false },
+      { id: uid(), label: 'certains plans durent trop longtemps', checked: false },
+      { id: uid(), label: 'montage manque de rythme', checked: false },
     ]
   },
   {
-    id: uid(), name: 'Rythme & sélection',
+    id: uid(), name: 'raccords',
     options: [
-      { id: uid(), label: 'Sélection rigoureuse, rythme narratif fort', checked: false },
-      { id: uid(), label: 'Bonne sélection, séquence cohérente', checked: false },
-      { id: uid(), label: 'Trop d\'images similaires, sélection à affiner', checked: false },
-      { id: uid(), label: 'Manque de tri et d\'édition', checked: false },
+      { id: uid(), label: 'quelques raccords pertinents', checked: false },
+      { id: uid(), label: 'des raccords hasardeux / qui ne marchent pas', checked: false },
+      { id: uid(), label: 'faux raccords visibles', checked: false },
+    ]
+  },
+  {
+    id: uid(), name: 'construction narrative',
+    options: [
+      { id: uid(), label: 'structure narrative intéressante', checked: false },
+      { id: uid(), label: 'compréhension difficile ou brouillonne', checked: false },
+    ]
+  },
+  {
+    id: uid(), name: 'étalonnage',
+    options: [
+      { id: uid(), label: 'étalonnage réussi ou intéressant', checked: false },
+      { id: uid(), label: 'étalonnage trop appuyé', checked: false },
+      { id: uid(), label: 'étalonnage qui dessert le propos', checked: false },
+    ]
+  },
+  {
+    id: uid(), name: 'ambiance',
+    options: [
+      { id: uid(), label: 'bonne ambiance globale', checked: false },
+      { id: uid(), label: 'effets qui ne fonctionnent pas et qui affaiblissent l\'ambiance', checked: false },
+    ]
+  },
+  {
+    id: uid(), name: 'effets caméra',
+    options: [
+      { id: uid(), label: 'effets de caméra pertinents', checked: false },
+      { id: uid(), label: 'effets de caméra mal utilisés', checked: false },
+    ]
+  },
+  {
+    id: uid(), name: 'vfx',
+    options: [
+      { id: uid(), label: 'effets vfx pertinents', checked: false },
+      { id: uid(), label: 'usage brouillon des VFX', checked: false },
+    ]
+  },
+  {
+    id: uid(), name: 'cohérence',
+    options: [
+      { id: uid(), label: 'ensemble cohérent', checked: false },
+      { id: uid(), label: 'ensemble qui manque de cohérence', checked: false },
+    ]
+  },
+  {
+    id: uid(), name: 'technique',
+    options: [
+      { id: uid(), label: 'bonne utilisation du son', checked: false },
+      { id: uid(), label: 'utilisation du son à peaufiner', checked: false },
+    ]
+  },
+  {
+    id: uid(), name: 'conclusion',
+    options: [
+      { id: uid(), label: 'Excellent travail', checked: false },
+      { id: uid(), label: 'Bon travail', checked: false },
+      { id: uid(), label: 'Assez bon travail', checked: false },
+      { id: uid(), label: 'Travail à revoir', checked: false },
+    ]
+  },
+  {
+    id: uid(), name: 'remarques supplémentaires',
+    options: [
+      { id: uid(), label: '', checked: false },
     ]
   },
 ];
