@@ -122,12 +122,6 @@ button { cursor: pointer; font-family: var(--font); }
 .btn-generate:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 .btn-generate-icon { font-size: 1.1rem; }
 
-.add-criterion-row {
-  display: flex;
-  gap: .5rem;
-  margin-top: .5rem;
-}
-
 .btn-add-criterion {
   background: transparent;
   border: 1px dashed var(--border);
@@ -135,47 +129,11 @@ button { cursor: pointer; font-family: var(--font); }
   border-radius: 8px;
   padding: .6rem 1.2rem;
   font-size: .85rem;
-  flex: 1;
+  width: 100%;
+  margin-top: .5rem;
   transition: border-color .15s, color .15s;
 }
 .btn-add-criterion:hover { border-color: var(--accent); color: var(--accent); }
-.btn-add-bareme { border-style: dashed; }
-.btn-add-bareme:hover { border-color: #6aaa80; color: #6aaa80; }
-
-/* ── Barème pills ─────────────────────────────── */
-.bareme-options {
-  display: flex;
-  gap: .5rem;
-  padding: .75rem 1rem;
-  flex-wrap: wrap;
-}
-
-.bareme-btn {
-  border: 2px solid transparent;
-  border-radius: 20px;
-  padding: .35rem 1rem;
-  font-size: .85rem;
-  font-weight: 500;
-  background: var(--surface2);
-  color: var(--text2);
-  cursor: pointer;
-  transition: all .15s;
-}
-
-.bareme-btn.bareme-green  { border-color: #6aaa80; }
-.bareme-btn.bareme-yellow { border-color: #c8c85a; }
-.bareme-btn.bareme-orange { border-color: #d4874a; }
-.bareme-btn.bareme-red    { border-color: #c06060; }
-
-.bareme-btn.bareme-green:hover  { color: #6aaa80; }
-.bareme-btn.bareme-yellow:hover { color: #c8c85a; }
-.bareme-btn.bareme-orange:hover { color: #d4874a; }
-.bareme-btn.bareme-red:hover    { color: #c06060; }
-
-.bareme-btn.bareme-green.selected  { background: #6aaa80; color: #0f0f11; }
-.bareme-btn.bareme-yellow.selected { background: #c8c85a; color: #0f0f11; }
-.bareme-btn.bareme-orange.selected { background: #d4874a; color: #0f0f11; }
-.bareme-btn.bareme-red.selected    { background: #c06060; color: #fff; }
 
 /* ── Settings Panel ──────────────────────────── */
 .settings-panel {
@@ -317,10 +275,52 @@ main {
 
 .option-row {
   display: flex;
+  flex-direction: column;
+  gap: .15rem;
+  padding: .3rem 0;
+}
+
+.option-row-main {
+  display: flex;
   align-items: center;
   gap: .6rem;
-  padding: .2rem 0;
 }
+
+/* ── Grade pills (per option) ────────────────── */
+.option-grade-row {
+  display: flex;
+  gap: .3rem;
+  padding-left: 22px;
+  flex-wrap: wrap;
+}
+
+.grade-pill {
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  padding: .1rem .55rem;
+  font-size: .72rem;
+  font-weight: 500;
+  background: var(--surface2);
+  color: var(--text2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .15s;
+}
+
+.grade-pill.grade-green  { border-color: #6aaa80; }
+.grade-pill.grade-yellow { border-color: #c8c85a; }
+.grade-pill.grade-orange { border-color: #d4874a; }
+.grade-pill.grade-red    { border-color: #c06060; }
+
+.grade-pill.grade-green:hover  { color: #6aaa80; }
+.grade-pill.grade-yellow:hover { color: #c8c85a; }
+.grade-pill.grade-orange:hover { color: #d4874a; }
+.grade-pill.grade-red:hover    { color: #c06060; }
+
+.grade-pill.grade-green.selected  { background: #6aaa80; color: #0f0f11; border-color: #6aaa80; }
+.grade-pill.grade-yellow.selected { background: #c8c85a; color: #0f0f11; border-color: #c8c85a; }
+.grade-pill.grade-orange.selected { background: #d4874a; color: #0f0f11; border-color: #d4874a; }
+.grade-pill.grade-red.selected    { background: #c06060; color: #fff;    border-color: #c06060; }
 
 .option-row input[type="checkbox"] {
   width: 16px;
@@ -342,7 +342,7 @@ main {
 }
 .option-label:focus { border-bottom: 1px solid var(--border); }
 
-.option-row input[type="checkbox"]:checked + .option-label {
+.option-row-main input[type="checkbox"]:checked + .option-label {
   color: var(--accent);
   font-weight: 500;
 }

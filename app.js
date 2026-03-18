@@ -108,22 +108,13 @@ const DEFAULT_CRITERIA = [
   },
 ];
 
-// ── Barème ────────────────────────────────────────────────────────────────
-const BAREME_OPTIONS = [
-  { label: 'Très bon',  color: 'green'  },
-  { label: 'Bon',       color: 'yellow' },
-  { label: 'Moyen',     color: 'orange' },
-  { label: 'Mauvais',   color: 'red'    },
+// ── Grade levels ──────────────────────────────────────────────────────────
+const GRADE_OPTIONS = [
+  { label: 'Très bon', color: 'green'  },
+  { label: 'Bon',      color: 'yellow' },
+  { label: 'Moyen',    color: 'orange' },
+  { label: 'Mauvais',  color: 'red'    },
 ];
-
-function makeBaremeCriterion() {
-  return {
-    id: uid(),
-    name: 'barème',
-    type: 'bareme',
-    options: BAREME_OPTIONS.map(o => ({ id: uid(), label: o.label, color: o.color, checked: false })),
-  };
-}
 
 // ── State ─────────────────────────────────────────────────────────────────
 let state = {
@@ -166,8 +157,6 @@ function render() {
 }
 
 function buildCriterionCard(criterion) {
-  if (criterion.type === 'bareme') return buildBaremeCard(criterion);
-
   const hasChecked = criterion.options.some(o => o.checked);
 
   const card = document.createElement('div');
@@ -230,80 +219,28 @@ function buildCriterionCard(criterion) {
   return card;
 }
 
-function buildBaremeCard(criterion) {
-  const selected = criterion.options.find(o => o.checked);
-
-  const card = document.createElement('div');
-  card.className = 'criterion-card' + (selected ? ' has-checked' : '');
-  card.dataset.id = criterion.id;
-
-  // Header
-  const header = document.createElement('div');
-  header.className = 'criterion-header';
-
-  const nameInput = document.createElement('input');
-  nameInput.type = 'text';
-  nameInput.className = 'criterion-name';
-  nameInput.value = criterion.name;
-  nameInput.placeholder = 'Nom du barème…';
-  nameInput.addEventListener('input', e => {
-    criterion.name = e.target.value;
-    persistState();
-  });
-
-  const btnDelete = document.createElement('button');
-  btnDelete.className = 'btn-icon btn-delete-criterion';
-  btnDelete.textContent = '✕';
-  btnDelete.title = 'Supprimer ce barème';
-  btnDelete.addEventListener('click', () => {
-    state.criteria = state.criteria.filter(c => c.id !== criterion.id);
-    persistState();
-    render();
-  });
-
-  header.appendChild(nameInput);
-  header.appendChild(btnDelete);
-
-  // Colored pills
-  const pillsRow = document.createElement('div');
-  pillsRow.className = 'bareme-options';
-
-  criterion.options.forEach(option => {
-    const btn = document.createElement('button');
-    btn.className = `bareme-btn bareme-${option.color}${option.checked ? ' selected' : ''}`;
-    btn.textContent = option.label;
-    btn.addEventListener('click', () => {
-      const wasChecked = option.checked;
-      criterion.options.forEach(o => o.checked = false);
-      option.checked = !wasChecked;
-      persistState();
-      render();
-    });
-    pillsRow.appendChild(btn);
-  });
-
-  card.appendChild(header);
-  card.appendChild(pillsRow);
-
-  return card;
-}
-
 function buildOptionRow(criterion, option) {
   const row = document.createElement('div');
   row.className = 'option-row';
+
+  // ── Main line: checkbox + label + delete ──
+  const mainLine = document.createElement('div');
+  mainLine.className = 'option-row-main';
 
   const checkbox = document.createElement('input');
   checkbox.type = 'checkbox';
   checkbox.checked = option.checked;
   checkbox.addEventListener('change', e => {
     option.checked = e.target.checked;
+    if (!option.checked) option.grade = null;
     persistState();
-    // Update card class live
     const card = document.querySelector(`.criterion-card[data-id="${criterion.id}"]`);
     if (card) {
       const hasChecked = criterion.options.some(o => o.checked);
       card.classList.toggle('has-checked', hasChecked);
     }
+    // Update grade pills in this row
+    row.querySelectorAll('.grade-pill').forEach(p => p.classList.remove('selected'));
   });
 
   const labelInput = document.createElement('input');
@@ -326,9 +263,37 @@ function buildOptionRow(criterion, option) {
     render();
   });
 
-  row.appendChild(checkbox);
-  row.appendChild(labelInput);
-  row.appendChild(btnDel);
+  mainLine.appendChild(checkbox);
+  mainLine.appendChild(labelInput);
+  mainLine.appendChild(btnDel);
+
+  // ── Grade line: Très bon / Bon / Moyen / Mauvais ──
+  const gradeLine = document.createElement('div');
+  gradeLine.className = 'option-grade-row';
+
+  GRADE_OPTIONS.forEach(g => {
+    const pill = document.createElement('button');
+    pill.className = `grade-pill grade-${g.color}${option.grade === g.label ? ' selected' : ''}`;
+    pill.textContent = g.label;
+    pill.addEventListener('click', () => {
+      if (option.grade === g.label) {
+        option.grade = null;
+      } else {
+        option.grade = g.label;
+        option.checked = true;
+        checkbox.checked = true;
+        const card = document.querySelector(`.criterion-card[data-id="${criterion.id}"]`);
+        if (card) card.classList.add('has-checked');
+      }
+      persistState();
+      gradeLine.querySelectorAll('.grade-pill').forEach(p => p.classList.remove('selected'));
+      if (option.grade) pill.classList.add('selected');
+    });
+    gradeLine.appendChild(pill);
+  });
+
+  row.appendChild(mainLine);
+  row.appendChild(gradeLine);
 
   return row;
 }
@@ -441,7 +406,10 @@ function buildPrompt(workshopName, studentName, checkedItems) {
     .map(c => {
       const opts = c.options.filter(o => o.checked && o.label.trim());
       if (!opts.length) return null;
-      return `${c.name} :\n${opts.map(o => `  - ${o.label}`).join('\n')}`;
+      return `${c.name} :\n${opts.map(o => {
+        const grade = o.grade ? ` (${o.grade})` : '';
+        return `  - ${o.label}${grade}`;
+      }).join('\n')}`;
     })
     .filter(Boolean)
     .join('\n\n');
@@ -576,12 +544,6 @@ function init() {
     render();
     const inputs = document.querySelectorAll('.criterion-name');
     if (inputs.length) inputs[inputs.length - 1].focus();
-  });
-
-  document.getElementById('btnAddBareme').addEventListener('click', () => {
-    state.criteria.push(makeBaremeCriterion());
-    persistState();
-    render();
   });
 
   document.getElementById('btnGenerate').addEventListener('click', generateEvaluation);
