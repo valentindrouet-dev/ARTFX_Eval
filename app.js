@@ -415,77 +415,40 @@ Rédige une évaluation textuelle en 3 à 5 phrases :
 Ne génère que le texte de l'évaluation, sans titre ni préambule.`;
 }
 
-async function generateEvaluation() {
-  const apiKey = getSetting('apiKey');
-  if (!apiKey) {
-    toast('Clé API manquante — configurez-la dans les paramètres ⚙');
-    document.getElementById('settingsPanel').classList.remove('hidden');
-    return;
-  }
-
+function generateEvaluation() {
   const checkedItems = state.criteria.filter(c => c.options.some(o => o.checked));
   if (!checkedItems.length) {
-    toast('Cochez au moins un critère pour générer une évaluation.');
+    toast('Cochez au moins un critère pour générer un résumé.');
     return;
   }
 
   const workshopName = document.getElementById('workshopName').value.trim();
-  const studentName = document.getElementById('studentName').value.trim();
-  const model = getSetting('model', 'claude-sonnet-4-6');
+  const studentName  = document.getElementById('studentName').value.trim();
+
+  const lines = [];
+  if (workshopName) lines.push(`Workshop : ${workshopName}`);
+  if (studentName)  lines.push(`Étudiant·e : ${studentName}`);
+  if (lines.length) lines.push('');
+
+  checkedItems.forEach(c => {
+    const opts = c.options.filter(o => o.checked && o.label.trim());
+    if (!opts.length) return;
+    lines.push(`${c.name} :`);
+    opts.forEach(o => {
+      const grade = o.grade ? ` (${o.grade})` : '';
+      lines.push(`  - ${o.label}${grade}`);
+    });
+    lines.push('');
+  });
 
   const outputSection = document.getElementById('outputSection');
-  const outputText = document.getElementById('outputText');
-  const outputMeta = document.getElementById('outputMeta');
-  const btnGenerate = document.getElementById('btnGenerate');
+  const outputText    = document.getElementById('outputText');
+  const outputMeta    = document.getElementById('outputMeta');
 
   outputSection.classList.remove('hidden');
-  outputText.className = 'output-text loading';
-  outputText.textContent = 'Génération en cours…';
-  outputMeta.textContent = '';
-  btnGenerate.disabled = true;
-
-  const prompt = buildPrompt(workshopName, studentName, checkedItems);
-
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
-      body: JSON.stringify({
-        model,
-        max_tokens: 512,
-        messages: [{ role: 'user', content: prompt }],
-      }),
-    });
-
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      throw new Error(err?.error?.message || `HTTP ${response.status}`);
-    }
-
-    const data = await response.json();
-    const text = data.content?.[0]?.text ?? '';
-
-    outputText.className = 'output-text';
-    outputText.textContent = text;
-
-    const usage = data.usage;
-    if (usage) {
-      outputMeta.textContent = `${usage.input_tokens} tokens entrée · ${usage.output_tokens} tokens sortie · modèle : ${model}`;
-    }
-
-  } catch (err) {
-    outputText.className = 'output-text';
-    outputText.textContent = '';
-    toast('Erreur : ' + err.message);
-    console.error(err);
-  } finally {
-    btnGenerate.disabled = false;
-  }
+  outputText.className = 'output-text';
+  outputText.textContent = lines.join('\n').trimEnd();
+  outputMeta.textContent = 'Copiez ce résumé et collez-le dans une IA pour obtenir la rédaction.';
 }
 
 // ── Copy ──────────────────────────────────────────────────────────────────
