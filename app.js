@@ -223,24 +223,17 @@ function buildOptionRow(criterion, option) {
   const row = document.createElement('div');
   row.className = 'option-row';
 
-  // ── Main line: checkbox + label + delete ──
-  const mainLine = document.createElement('div');
-  mainLine.className = 'option-row-main';
-
   const checkbox = document.createElement('input');
   checkbox.type = 'checkbox';
   checkbox.checked = option.checked;
   checkbox.addEventListener('change', e => {
     option.checked = e.target.checked;
-    if (!option.checked) option.grade = null;
     persistState();
     const card = document.querySelector(`.criterion-card[data-id="${criterion.id}"]`);
     if (card) {
       const hasChecked = criterion.options.some(o => o.checked);
       card.classList.toggle('has-checked', hasChecked);
     }
-    // Update grade pills in this row
-    row.querySelectorAll('.grade-pill').forEach(p => p.classList.remove('selected'));
   });
 
   const labelInput = document.createElement('input');
@@ -253,6 +246,23 @@ function buildOptionRow(criterion, option) {
     persistState();
   });
 
+  // ── Grade pills (inline, at the end) ──
+  const gradeContainer = document.createElement('div');
+  gradeContainer.className = 'option-grade-row';
+
+  GRADE_OPTIONS.forEach(g => {
+    const pill = document.createElement('button');
+    pill.className = `grade-pill grade-${g.color}${option.grade === g.label ? ' selected' : ''}`;
+    pill.textContent = g.label;
+    pill.addEventListener('click', () => {
+      option.grade = option.grade === g.label ? null : g.label;
+      persistState();
+      gradeContainer.querySelectorAll('.grade-pill').forEach(p => p.classList.remove('selected'));
+      if (option.grade) pill.classList.add('selected');
+    });
+    gradeContainer.appendChild(pill);
+  });
+
   const btnDel = document.createElement('button');
   btnDel.className = 'btn-delete-option';
   btnDel.textContent = '✕';
@@ -263,37 +273,10 @@ function buildOptionRow(criterion, option) {
     render();
   });
 
-  mainLine.appendChild(checkbox);
-  mainLine.appendChild(labelInput);
-  mainLine.appendChild(btnDel);
-
-  // ── Grade line: Très bon / Bon / Moyen / Mauvais ──
-  const gradeLine = document.createElement('div');
-  gradeLine.className = 'option-grade-row';
-
-  GRADE_OPTIONS.forEach(g => {
-    const pill = document.createElement('button');
-    pill.className = `grade-pill grade-${g.color}${option.grade === g.label ? ' selected' : ''}`;
-    pill.textContent = g.label;
-    pill.addEventListener('click', () => {
-      if (option.grade === g.label) {
-        option.grade = null;
-      } else {
-        option.grade = g.label;
-        option.checked = true;
-        checkbox.checked = true;
-        const card = document.querySelector(`.criterion-card[data-id="${criterion.id}"]`);
-        if (card) card.classList.add('has-checked');
-      }
-      persistState();
-      gradeLine.querySelectorAll('.grade-pill').forEach(p => p.classList.remove('selected'));
-      if (option.grade) pill.classList.add('selected');
-    });
-    gradeLine.appendChild(pill);
-  });
-
-  row.appendChild(mainLine);
-  row.appendChild(gradeLine);
+  row.appendChild(checkbox);
+  row.appendChild(labelInput);
+  row.appendChild(gradeContainer);
+  row.appendChild(btnDel);
 
   return row;
 }
