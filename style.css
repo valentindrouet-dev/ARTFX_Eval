@@ -224,7 +224,7 @@ main {
 .student-bar input:focus { border-color: var(--accent); }
 
 /* ── Criteria List ───────────────────────────── */
-.criteria-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; }
+.criteria-list { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; align-items: start; }
 
 .criterion-card {
   background: var(--surface);
